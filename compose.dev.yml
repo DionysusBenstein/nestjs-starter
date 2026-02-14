@@ -1,0 +1,68 @@
+services:
+  database:
+    container_name: ${PROJECT_NAME}_database
+    hostname: postgres
+    image: postgres:17.4
+    ports:
+      - 127.0.0.1:${DB_PORT}:5432
+    volumes:
+      - db_data:/var/lib/postgresql/pgdata
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      PGDATA: /var/lib/postgresql/pgdata
+    networks:
+      - main_network
+    restart: unless-stopped
+
+  redis:
+    container_name: ${PROJECT_NAME}_redis
+    image: redis:7.4.2-alpine
+    ports:
+      - 127.0.0.1:${REDIS_PORT}:6379
+    networks:
+      - main_network
+    restart: unless-stopped
+
+  back:
+    container_name: ${PROJECT_NAME}_back
+    build: .
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      PORT: ${BACK_PORT}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      NODE_ENV: development
+      DB_HOST: database
+      DB_PORT: 5432
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      REDIS_HOST: redis
+      REDIS_PORT: ${REDIS_PORT}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_SECURE: ${SMTP_SECURE}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      FRONTEND_URL: ${FRONTEND_URL}
+    networks:
+      - main_network
+    ports:
+      - 127.0.0.1:${BACK_PORT}:${BACK_PORT}
+    depends_on:
+      - database
+    restart: unless-stopped
+    command: sh -c "pnpm migration:run && pnpm start:dev"
+
+networks:
+  main_network:
+    name: ${PROJECT_NAME}_network
+    driver: bridge
+
+volumes:
+  db_data:
+    name: ${PROJECT_NAME}_volume
