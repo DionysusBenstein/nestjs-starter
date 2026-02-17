@@ -18,6 +18,6 @@ RUN \
   else echo "pnpm-lock.yaml not found." && exit 1; \
   fi
 
-RUN pnpm add -g @nestjs/cli
+RUN pnpm add -g @nestjs/cli@11
 
 COPY . .

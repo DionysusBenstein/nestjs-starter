@@ -1,5 +1,5 @@
 import { ConfigService } from '@nestjs/config';
-import { createTransport } from 'nodemailer';
+import { createTransport, type Transporter } from 'nodemailer';
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { MailQueueJobName } from './enums/mail-queue-job-name.enum';
@@ -8,10 +8,14 @@ import * as handlebars from 'handlebars';
 import * as fs from 'fs';
 import * as path from 'path';
 
+type MailJobData =
+  | { email: string; resetUrl: string }
+  | { email: string; code: string };
+
 @Processor('email')
 export class MailProcessor extends WorkerHost {
   private readonly _logger = new Logger(MailProcessor.name);
-  private transporter;
+  private transporter: Transporter;
 
   constructor(private configService: ConfigService) {
     super();
@@ -31,15 +35,15 @@ export class MailProcessor extends WorkerHost {
     this._logger.debug('Mail transport initialized', transportConfig);
   }
 
-  async process(job: Job): Promise<any> {
+  async process(job: Job<MailJobData>): Promise<void> {
     switch (job.name) {
       case MailQueueJobName.SendPasswordResetEmail: {
-        const { email, resetUrl } = job.data;
+        const { email, resetUrl } = job.data as { email: string; resetUrl: string };
         await this.sendPasswordResetEmail(email, resetUrl);
         break;
       }
       case MailQueueJobName.SendVerificationCodeEmail: {
-        const { email, code } = job.data;
+        const { email, code } = job.data as { email: string; code: string };
         await this.sendVerifyUserEmail(email, code);
         break;
       }

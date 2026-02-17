@@ -14,7 +14,7 @@ A NestJS starter template with authentication, user management, email service, a
 
 ## Tech Stack
 
-- NestJS 10
+- NestJS 11
 - TypeScript 5
 - PostgreSQL 17 + TypeORM
 - Redis + BullMQ

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { DataSource, QueryRunner, EntityManager, Repository, DeepPartial, EntityTarget, ObjectLiteral, FindOptionsWhere, DeleteResult, UpdateResult, ObjectId } from 'typeorm';
+import { DataSource, QueryRunner, EntityManager, DeepPartial, FindOptionsWhere, DeleteResult, UpdateResult, ObjectId } from 'typeorm';
 import { IsolationLevel } from 'typeorm/driver/types/IsolationLevel';
 
 const DEFAULT_ISOLATION_LEVEL: IsolationLevel = 'READ COMMITTED';
