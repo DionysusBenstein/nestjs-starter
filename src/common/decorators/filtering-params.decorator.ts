@@ -18,7 +18,10 @@ import {
 import { ErrorCode } from '../enums/error-code.enum';
 
 export type EntityFields<T> = (keyof T)[];
-export type FilteringResult = Record<string, unknown>;
+
+export interface IFiltering {
+  [field: string]: unknown;
+}
 
 interface IFilteringParams {
   field: string;
