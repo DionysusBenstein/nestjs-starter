@@ -1,13 +1,13 @@
-import * as bcrypt from 'bcrypt';
 import { ConflictException, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, IsNull } from 'typeorm';
-import { Password } from './entities/password.entity';
+import * as bcrypt from 'bcrypt';
 import { ErrorCode } from 'src/common/enums/error-code.enum';
 import { DbTransactionFactory, saveWithTransactions } from 'src/database/transaction-factory';
+import { IsNull, Repository } from 'typeorm';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { Password } from './entities/password.entity';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
